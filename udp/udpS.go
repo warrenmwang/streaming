@@ -3,10 +3,10 @@ package main
 import (
     "fmt"
     "os"
-    "strconv"
     "strings"
     "net"
     "regexp"
+    "math/big"
 )
 
 func main() {
@@ -61,17 +61,25 @@ func main() {
             // Parse the given data and add the two numbers together
             tmp := strings.Split(strings.TrimSpace(str), ",")
 
-            a, err := strconv.Atoi(tmp[0])
-            if err != nil {
-                fmt.Println(err)
+            // Use BIG floats to allow computing big integers
+            a := new(big.Int)
+            a, ok := a.SetString(tmp[0], 10)
+            if !ok {
+                fmt.Printf("error in converting %s into big int\n", tmp[0])
                 return
             }
-            b, err := strconv.Atoi(tmp[1])
-            if err != nil {
-                fmt.Println(err)
+            
+            b := new(big.Int)
+            b, ok = b.SetString(tmp[1], 10)
+            if !ok {
+                fmt.Printf("error in converting %s into big int\n", tmp[1])
                 return
             }
-            res = fmt.Sprintf("%d", a + b)
+
+            c := new(big.Int)
+            c = c.Add(a, b)
+ 
+            res = c.Text(10)
         }
 
         // Send result
